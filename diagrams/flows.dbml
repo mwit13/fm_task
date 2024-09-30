@@ -1,0 +1,112 @@
+Table main.start {
+  Empty l
+}
+
+Table main.creation {
+  TaskGroup l
+}
+
+Table main.ingestion_and_fetch {
+  TaskGroup l
+}
+
+Table main.transformation {
+  TaskGroup l
+}
+
+Table main.build_views {
+  TaskGroup l
+}
+
+Table main.end {
+  Empty l
+}
+Ref: "main"."start"."Empty" > "main"."creation"."TaskGroup"
+Ref: "main"."creation"."TaskGroup" > "main"."ingestion_and_fetch"."TaskGroup"
+Ref: "main"."ingestion_and_fetch"."TaskGroup" > "main"."transformation"."TaskGroup"
+Ref: "main"."transformation"."TaskGroup" > "main"."build_views"."TaskGroup"
+Ref: "main"."build_views"."TaskGroup" > "main"."end"."Empty"
+
+Table creation.start {
+  Empty l
+}
+
+Table creation.create_stg {
+  Task l
+}
+
+Table creation.create_dwh {
+  Task l
+}
+
+Table creation.end {
+  Empty l
+}
+Ref: "creation"."start"."Empty" > "creation"."create_stg"."Task"
+Ref: "creation"."start"."Empty" > "creation"."create_dwh"."Task"
+Ref: "creation"."create_dwh"."Task" > "creation"."end"."Empty"
+Ref: "creation"."create_stg"."Task" > "creation"."end"."Empty"
+
+
+Table ingestion.ingest_revenues {
+  Task l
+}
+Table ingestion.fetch_and_ingest_movie_details {
+  Task l
+}
+
+Table ingestion.start {
+  Empty l
+}
+
+Table ingestion.end {
+  Empty l
+}
+Ref: "ingestion"."start"."Empty" > "ingestion"."ingest_revenues"."Task"
+Ref: "ingestion"."ingest_revenues"."Task" > "ingestion"."fetch_and_ingest_movie_details"."Task"
+Ref: "ingestion"."fetch_and_ingest_movie_details"."Task" > "ingestion"."end"."Empty"
+
+
+Table transformation.start {
+  Empty l
+}
+
+Table transformation.populate_dim__dates {
+  Task l
+}
+
+Table transformation.populate_dim__distributors {
+  Task l
+}
+
+Table transformation.populate_dim__reviewers {
+  Task l
+}
+
+Table transformation.populate_dim__movies {
+  Task l
+}
+
+Table transformation.populate_dim__reviews_results {
+  Task l
+}
+
+Table transformation.populate_fact_revenue {
+  Task l
+}
+
+Table transformation.end {
+  Empty l
+}
+
+Ref: "transformation"."start"."Empty" > "transformation"."populate_dim__dates"."Task"
+Ref: "transformation"."start"."Empty" > "transformation"."populate_dim__distributors"."Task"
+Ref: "transformation"."start"."Empty" > "transformation"."populate_dim__reviewers"."Task"
+Ref: "transformation"."populate_dim__dates"."Task" > "transformation"."populate_dim__movies"."Task"
+Ref: "transformation"."populate_dim__movies"."Task" > "transformation"."populate_dim__reviews_results"."Task"
+Ref: "transformation"."populate_dim__reviewers"."Task" > "transformation"."populate_dim__reviews_results"."Task"
+Ref: "transformation"."populate_dim__reviews_results"."Task" > "transformation"."populate_fact_revenue"."Task"
+Ref: "transformation"."populate_fact_revenue"."Task" > "transformation"."end"."Empty"
+Ref: "transformation"."populate_dim__distributors"."Task" > "transformation"."populate_fact_revenue"."Task"
+
+

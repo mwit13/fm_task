@@ -1,0 +1,140 @@
+// https://dbml.dbdiagram.io/d
+
+Table stg.revenues_per_day {
+  created_date datetime [not null]
+  modified_date datetime [not null]
+  id string [primary key]
+  date date [primary key]
+  title string
+  revenue int
+  theaters int
+  distributor string
+}
+Table stg.movies_details {
+  created_date datetime [not null]
+  modified_date datetime [not null]
+  title string [primary key]
+  info json
+}
+
+Table dwh.fact__revenues {
+  id int [primary key]
+  created_date datetime [not null]
+  modified_date datetime [not null]
+  movie_id int
+  calendar_id int
+  distributor_id int
+  revenue int
+  theaters int
+
+  Indexes {
+  movie_id
+  calendar_id
+  distributor_id
+  }
+}
+
+
+Table dwh.dim__movies {
+  id int [primary key]
+  created_date datetime [not null]
+  modified_date datetime [not null]
+  title str [not null]
+  start_year_date_id int
+  end_year_date_id int
+  rated str
+  release_date_id datetime
+  length_min int
+  genre array
+  directors array
+  writers array
+  actors array
+  plot str
+  languages array
+  countries array
+  awards str
+  poster_url str
+  imdb_votes_number int
+  imdb_id str [not null, unique]
+  type str [not null]
+  dvd_release_date_id datetime
+  boxoffice int
+  production array
+
+  Indexes {
+    title
+    start_year_date_id
+    end_year_date_id
+    release_date_id
+    dvd_release_date_id
+    imdb_id
+  }
+}
+
+
+Table dwh.dim__reviews_results {
+  id int [primary key]
+  created_date datetime [not null]
+  modified_date datetime [not null]
+  movie_id int
+  reviewer_id int
+  score_percent int
+
+  Indexes {
+    movie_id
+    reviewer_id
+  }
+}
+
+
+Table dwh.dim__movies_reviewers {
+  id int [primary key]
+  created_date datetime [not null]
+  modified_date datetime [not null]
+  name str [not null, unique]
+
+  Indexes {name}
+}
+
+
+Table dwh.dim__dates {
+  id int [primary key]
+  created_date datetime [not null]
+  modified_date datetime [not null]
+  value date [unique]
+
+  Indexes {value}
+}
+
+
+Table dwh.dim__distributors {
+  id int [primary key]
+  created_date datetime [not null]
+  modified_date datetime [not null]
+  name string [unique]
+
+  Indexes {name}
+}
+
+
+
+
+
+
+Ref: "dwh"."dim__movies"."id" < "dwh"."fact__revenues"."movie_id"
+
+
+Ref: "dwh"."dim__movies"."id" < "dwh"."dim__reviews_results"."movie_id"
+Ref: "dwh"."dim__movies"."start_year_date_id" > "dwh"."dim__dates"."id"
+Ref: "dwh"."dim__movies"."end_year_date_id" > "dwh"."dim__dates"."id"
+Ref: "dwh"."dim__movies"."release_date_id" > "dwh"."dim__dates"."id"
+Ref: "dwh"."dim__movies"."dvd_release_date_id" > "dwh"."dim__dates"."id"
+
+
+Ref: "dwh"."dim__movies_reviewers"."id" < "dwh"."dim__reviews_results"."reviewer_id"
+
+
+Ref: "dwh"."dim__dates"."id" < "dwh"."fact__revenues"."calendar_id"
+
+
+Ref: "dwh"."dim__distributors"."id" < "dwh"."fact__revenues"."distributor_id"

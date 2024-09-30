@@ -1,0 +1,7 @@
+.idea/
+.venv/
+iframe_figures/
+**/*.ipynb_checkpoints/
+**/*__pycache__/
+data_to_ingest/*
+db/task.db
